@@ -22,4 +22,16 @@ public class CustomerController : Controller
         var customerList = _customerService.GetCustomerList();
         return Ok(customerList);
     }
+
+    /// <summary>
+    /// 取得單一客戶資料
+    /// </summary>
+    /// <param name="customerId"></param>
+    /// <returns></returns>
+    [HttpGet("api/customers/{customerId}")]
+    public IActionResult GetSingleCustomerInfo(string customerId)
+    {
+        var customer = _customerService.GetSingleCustomerInfo(customerId);
+        return Ok(customer);
+    }
 }

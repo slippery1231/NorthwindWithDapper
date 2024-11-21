@@ -15,10 +15,23 @@ public class CustomerService : ICustomerService
         _dbRepository = customerRepository;
         _mapper = mapper;
     }
+
     public IEnumerable<CustomerDto> GetCustomerList()
     {
         var data = _dbRepository.GetAll();
 
         return _mapper.Map<IEnumerable<CustomerDto>>(data).ToList();
+    }
+
+    public CustomerDto GetSingleCustomerInfo(string customerId)
+    {
+        var customer = _dbRepository.GetCustomerById(customerId);
+
+        if (customer == null)
+        {
+            throw new Exception("customer not found");
+        }
+
+        return _mapper.Map<CustomerDto>(customer);
     }
 }

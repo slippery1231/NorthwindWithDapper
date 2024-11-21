@@ -11,8 +11,8 @@ public class CustomerRepository
 
     public CustomerRepository(IConfiguration configuration)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection") 
-                            ?? throw new ArgumentNullException(nameof(configuration), 
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+                            ?? throw new ArgumentNullException(nameof(configuration),
                                 "DefaultConnection string is not configured");
     }
 
@@ -26,5 +26,13 @@ public class CustomerRepository
         using var connection = CreateConnection();
         connection.Open();
         return connection.Query<CustomerDto>("SELECT * FROM Customers");
+    }
+
+    public CustomerDto? GetCustomerById(string customerId)
+    {
+        using var connection = CreateConnection();
+        connection.Open();
+        
+        return connection.QueryFirstOrDefault<CustomerDto>("SELECT * FROM Customers WHERE CustomerID = @customerId",new {customerId});
     }
 }
