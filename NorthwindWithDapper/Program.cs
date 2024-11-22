@@ -1,4 +1,8 @@
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using NorthwindWithDapper;
 using NorthwindWithDapper.Controllers;
+using NorthwindWithDapper.ExceptionHandler;
 using NorthwindWithDapper.Models.Mapper;
 using NorthwindWithDapper.Repositories;
 using NorthwindWithDapper.Services.Implement;
@@ -32,5 +36,36 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature.Error;
+        ApiResponse response;
+
+        if (exception is CustomerNotFoundException)
+        {
+            response = new ApiResponse(
+                StatusCodes.Status400BadRequest,
+                CustomerNotFoundException.ErrorMessage
+            );
+            context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        }
+        else
+        {
+            response = new ApiResponse(
+                StatusCodes.Status500InternalServerError,
+                CustomerNotFoundException.ErrorMessage
+            );
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        }
+
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsJsonAsync(response);
+    });
+});
+
 
 app.Run();

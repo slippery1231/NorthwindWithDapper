@@ -1,4 +1,5 @@
 using AutoMapper;
+using NorthwindWithDapper.ExceptionHandler;
 using NorthwindWithDapper.Models.Dtos;
 using NorthwindWithDapper.Models.Entities;
 using NorthwindWithDapper.Models.ViewModel;
@@ -31,7 +32,7 @@ public class CustomerService : ICustomerService
 
         if (customer == null)
         {
-            throw new Exception("customer not found");
+            throw new CustomerNotFoundException("customer is not found");
         }
 
         return _mapper.Map<CustomerDto>(customer);
@@ -41,7 +42,7 @@ public class CustomerService : ICustomerService
     {
         if (_dbRepository.GetCustomerById(viewModel.CustomerId) != null)
         {
-            throw new Exception("customer has already existed");
+            throw new CustomerNotFoundException("customer has already existed");
         }
 
         var customer = _mapper.Map<Customers>(viewModel);
@@ -53,7 +54,7 @@ public class CustomerService : ICustomerService
     {
         if (_dbRepository.GetCustomerById(viewModel.CustomerId) == null)
         {
-            throw new Exception("customer is not exist");
+            throw new CustomerNotFoundException("customer is not exist");
         }
 
         var customer = _mapper.Map<Customers>(viewModel);
@@ -66,7 +67,7 @@ public class CustomerService : ICustomerService
         var customer = _dbRepository.GetCustomerById(customerId);
         if (customer == null)
         {
-            throw new Exception("customer is not exist");
+            throw new CustomerNotFoundException("customer is not exist");
         }
 
         var map = _mapper.Map<CustomerDto>(customer);

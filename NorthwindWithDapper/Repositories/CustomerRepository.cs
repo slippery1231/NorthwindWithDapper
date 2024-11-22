@@ -29,7 +29,7 @@ public class CustomerRepository
         return connection.Query<CustomerDto>("SELECT * FROM Customers");
     }
 
-    public CustomerDto? GetCustomerById(string customerId)
+    public CustomerDto GetCustomerById(string customerId)
     {
         using var connection = CreateConnection();
         connection.Open();
@@ -49,9 +49,9 @@ public class CustomerRepository
             @Address, @City, @Region, @PostalCode, @Country, @Phone, @Fax
         )";
 
-        using var connection = CreateConnection();
-        connection.Execute(sql, customer);
+        Execute(customer, sql);
     }
+
 
     public void UpdateCustomer(Customers customer)
     {
@@ -69,6 +69,15 @@ SET
     Phone = @Phone,
     Fax = @Fax
 WHERE CustomerID = @CustomerID";
+
+        Execute(customer, sql);
+    }
+
+    public void DeleteCustomer(CustomerDto customer)
+    {
+        const string sql = @"
+      DELETE Customers
+WHERE CustomerID = @customerId";
 
         using var connection = CreateConnection();
         if (connection.State != ConnectionState.Open)
@@ -89,12 +98,8 @@ WHERE CustomerID = @CustomerID";
         }
     }
 
-    public void DeleteCustomer(CustomerDto customer)
+    private void Execute(Customers customer, string sql)
     {
-        const string sql = @"
-      DELETE Customers
-WHERE CustomerID = @customerId";
-
         using var connection = CreateConnection();
         if (connection.State != ConnectionState.Open)
         {

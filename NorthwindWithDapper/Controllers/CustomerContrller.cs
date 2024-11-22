@@ -49,7 +49,9 @@ public class CustomerController : Controller
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage)
                 .ToList();
-            return BadRequest(new { Message = "Required Fields Are Missing", Errors = errors });
+            return BadRequest(new ApiResponse(
+                StatusCodes.Status400BadRequest,
+                $"Required Fields Are Missing. {string.Join(", ", errors)}"));
         }
 
         _customerService.AddCustomerInfo(viewModel);
@@ -69,7 +71,9 @@ public class CustomerController : Controller
             var errors = ModelState.Values.SelectMany(v => v.Errors)
                 .Select(e => e.ErrorMessage)
                 .ToList();
-            return BadRequest(new { Message = "Required Fields Are Missing", Errors = errors });
+            return BadRequest(new ApiResponse(
+                StatusCodes.Status400BadRequest,
+                $"Required Fields Are Missing. {string.Join(", ", errors)}"));
         }
 
         _customerService.UpdateCustomerInfo(viewModel);
