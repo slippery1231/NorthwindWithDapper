@@ -48,4 +48,16 @@ public class CustomerService : ICustomerService
 
         _dbRepository.InsertCustomer(customer);
     }
+
+    public void UpdateCustomerInfo(CustomerViewModel viewModel)
+    {
+        if (_dbRepository.GetCustomerById(viewModel.CustomerId) == null)
+        {
+            throw new Exception("customer is not exist");
+        }
+
+        var customer = _mapper.Map<Customers>(viewModel);
+
+        _dbRepository.UpdateCustomer(customer);
+    }
 }

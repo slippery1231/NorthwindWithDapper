@@ -52,4 +52,39 @@ public class CustomerRepository
         using var connection = CreateConnection();
         connection.Execute(sql, customer);
     }
+
+    public void UpdateCustomer(Customers customer)
+    {
+        const string sql = @"
+       UPDATE Customers 
+SET 
+    CompanyName = @CompanyName,
+    ContactName = @ContactName,
+    ContactTitle = @ContactTitle,
+    Address = @Address,
+    City = @City,
+    Region = @Region,
+    PostalCode = @PostalCode,
+    Country = @Country,
+    Phone = @Phone,
+    Fax = @Fax
+WHERE CustomerID = @CustomerID";
+
+        using var connection = CreateConnection();
+        if (connection.State != ConnectionState.Open)
+        {
+            connection.Open();
+        }
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            connection.Execute(sql, customer, transaction);
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+    }
 }
