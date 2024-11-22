@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using NorthwindWithDapper.Models.ViewModel;
 using NorthwindWithDapper.Services.Interface;
 
 namespace NorthwindWithDapper.Controllers;
@@ -33,5 +34,25 @@ public class CustomerController : Controller
     {
         var customer = _customerService.GetSingleCustomerInfo(customerId);
         return Ok(customer);
+    }
+
+    /// <summary>
+    /// 新增一筆客戶資料
+    /// </summary>
+    /// <param name="viewModel"></param>
+    /// <returns></returns>
+    [HttpPost("api/customers")]
+    public IActionResult AddCustomerInfo([FromBody] CustomerViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors)
+                .Select(e => e.ErrorMessage)
+                .ToList();
+            return BadRequest(new { Message = "Required Fields Are Missing", Errors = errors });
+        }
+
+        _customerService.AddCustomerInfo(viewModel);
+        return Ok(new { StatusCode = 200, Message = "create successfully" });
     }
 }

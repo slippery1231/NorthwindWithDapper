@@ -1,5 +1,7 @@
 using AutoMapper;
 using NorthwindWithDapper.Models.Dtos;
+using NorthwindWithDapper.Models.Entities;
+using NorthwindWithDapper.Models.ViewModel;
 using NorthwindWithDapper.Repositories;
 using NorthwindWithDapper.Services.Interface;
 
@@ -33,5 +35,17 @@ public class CustomerService : ICustomerService
         }
 
         return _mapper.Map<CustomerDto>(customer);
+    }
+
+    public void AddCustomerInfo(CustomerViewModel viewModel)
+    {
+        if (_dbRepository.GetCustomerById(viewModel.CustomerId) != null)
+        {
+            throw new Exception("customer has already existed");
+        }
+
+        var customer = _mapper.Map<Customers>(viewModel);
+
+        _dbRepository.InsertCustomer(customer);
     }
 }
