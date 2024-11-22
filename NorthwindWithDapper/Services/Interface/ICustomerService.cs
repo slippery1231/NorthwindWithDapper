@@ -12,4 +12,6 @@ public interface ICustomerService
     void AddCustomerInfo(CustomerViewModel viewModel);
 
     void UpdateCustomerInfo(CustomerViewModel viewModel);
+    
+    void DeleteCustomerInfo(string customerId);
 }

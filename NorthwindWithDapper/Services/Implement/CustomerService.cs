@@ -60,4 +60,17 @@ public class CustomerService : ICustomerService
 
         _dbRepository.UpdateCustomer(customer);
     }
+
+    public void DeleteCustomerInfo(string customerId)
+    {
+        var customer = _dbRepository.GetCustomerById(customerId);
+        if (customer == null)
+        {
+            throw new Exception("customer is not exist");
+        }
+
+        var map = _mapper.Map<CustomerDto>(customer);
+
+        _dbRepository.DeleteCustomer(map);
+    }
 }

@@ -75,6 +75,32 @@ WHERE CustomerID = @CustomerID";
         {
             connection.Open();
         }
+
+        using var transaction = connection.BeginTransaction();
+        try
+        {
+            connection.Execute(sql, customer, transaction);
+            transaction.Commit();
+        }
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
+    }
+
+    public void DeleteCustomer(CustomerDto customer)
+    {
+        const string sql = @"
+      DELETE Customers
+WHERE CustomerID = @customerId";
+
+        using var connection = CreateConnection();
+        if (connection.State != ConnectionState.Open)
+        {
+            connection.Open();
+        }
+
         using var transaction = connection.BeginTransaction();
         try
         {

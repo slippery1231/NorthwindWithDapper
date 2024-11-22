@@ -55,13 +55,12 @@ public class CustomerController : Controller
         _customerService.AddCustomerInfo(viewModel);
         return Ok(new { StatusCode = 200, Message = "create successfully" });
     }
-    
+
     /// <summary>
     /// 更新單一筆客戶資料
     /// </summary>
     /// <param name="viewModel"></param>
     /// <returns></returns>
-    
     [HttpPut("api/customers")]
     public IActionResult UpdateCustomerInfo([FromBody] CustomerViewModel viewModel)
     {
@@ -75,5 +74,16 @@ public class CustomerController : Controller
 
         _customerService.UpdateCustomerInfo(viewModel);
         return Ok(new { StatusCode = 200, Message = "update successfully" });
+    }
+
+    /// <summary>
+    /// 刪除單筆客戶資料
+    /// </summary>
+    /// <returns></returns>
+    [HttpDelete("api/customers/{customerId}")]
+    public IActionResult DeleteCustomerInfo(string customerId)
+    {
+        _customerService.DeleteCustomerInfo(customerId);
+        return Ok(new { StatusCode = 200, Message = "delete successfully" });
     }
 }
